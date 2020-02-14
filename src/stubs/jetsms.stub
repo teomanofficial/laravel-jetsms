@@ -1,0 +1,28 @@
+<?php
+
+namespace DummyNamespace;
+
+
+use Hsntngr\JetSms\RegularSms;
+
+class DummyClass extends RegularSms
+{
+    /**
+     * Create a new message instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    /**
+     * Build the message.
+     *
+     */
+    public function build()
+    {
+        return $this->message('');
+    }
+}
