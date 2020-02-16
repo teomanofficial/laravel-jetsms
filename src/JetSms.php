@@ -99,7 +99,7 @@ class JetSms
 
         $username = config('jetsms.auth.username');
         $password = config('jetsms.auth.password');
-        $originator = config('jetsms.auth.originator');
+        $originator = optional($sms)->getTitle() ?? config('jetsms.auth.originator');
 
         // api kullanıcı bilgilerinin girildiğini doğrula
         if (!$username or !$password) {
