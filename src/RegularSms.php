@@ -5,10 +5,22 @@ namespace Hsntngr\JetSms;
 
 class RegularSms
 {
+    /**
+     * Alıcılar
+     * @var array
+     */
     protected $to = [];
 
+    /**
+     * Mesajlar
+     * @var array
+     */
     protected $message = [];
 
+    /**
+     * Mesaj başlığı (Originator | Transmission ID)
+     * @var string
+     */
     protected $title;
 
     public static function create()
@@ -28,6 +40,7 @@ class RegularSms
     }
 
     /**
+     * Gönderilecek Kişi - Kişiler
      * @param $no mixed
      * @return RegularSms
      */
@@ -49,6 +62,7 @@ class RegularSms
     }
 
     /**
+     * Mesajlar
      * @param $msg
      * @return RegularSms
      */
@@ -70,6 +84,7 @@ class RegularSms
     }
 
     /**
+     * Alıcıları Getir
      * @return array
      */
     public function getReceivers(): array
@@ -78,6 +93,7 @@ class RegularSms
     }
 
     /**
+     * Mesajları getir
      * @return mixed
      */
     public function getMessages()
@@ -86,6 +102,7 @@ class RegularSms
     }
 
     /**
+     * Mesaj başlığını getir
      * @return string
      */
     public function getTitle()
@@ -93,6 +110,12 @@ class RegularSms
         return $this->title;
     }
 
+    /**
+     * Girilen bilgileri kullanarak
+     * Sms oluştur
+     *
+     * @return RegularSms
+     */
     public function build()
     {
         return $this;

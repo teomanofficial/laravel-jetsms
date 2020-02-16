@@ -10,16 +10,29 @@ use Hsntngr\JetSms\Exceptions\ApiCredentialsNotValid;
 
 class JetSms
 {
+    /**
+     * Alıcılar
+     * @var array
+     */
     protected $to = [];
 
+    /**
+     * Mesajlar
+     * @var array
+     */
     protected $message = [];
 
+    /**
+     * JetSms örneği oluştur
+     * @return static
+     */
     public static function create()
     {
         return new static();
     }
 
     /**
+     * Gönderilecek Kişi - Kişiler
      * @param $no
      * @return JetSms
      */
@@ -30,7 +43,11 @@ class JetSms
         }
 
         if (is_object($no)) {
-            array_push($this->to, (string) $no);
+            if ($no instanceof \ArrayAccess) {
+                $this->to = array_merge($this->to,  (array) $no);
+            } else {
+                array_push($this->to, (string) $no);
+            }
         }
 
         if (is_array($no)) {
@@ -41,6 +58,7 @@ class JetSms
     }
 
     /**
+     * Gönderilecek Mesaj
      * @param $msg
      * @return JetSms
      */
@@ -51,7 +69,7 @@ class JetSms
         }
 
         if (is_object($msg)) {
-            array_push($this->message, (string)$msg);
+            array_push($this->message, (string) $msg);
         }
 
         if (is_array($msg)) {
@@ -61,6 +79,20 @@ class JetSms
         return $this;
     }
 
+    /**
+     * Mesajı Gönder
+     * Gönderme işlemi için RegularSms
+     * zorunlu değildir. Doğrudan kişi ve
+     * mesaj bilgileri girilerek mesaj
+     * gönderilebilir. Her mesaj için
+     * Ayrı sms oluşturmak gerekmez.
+     *
+     * @param RegularSms|null $sms
+     * @return \Psr\Http\Message\ResponseInterface
+     * @throws ApiCredentialsNotValid
+     * @throws MessageNotFound
+     * @throws RecieverNotFound
+     */
     public function send(RegularSms $sms = null)
     {
         $sms && $sms->build();
@@ -69,20 +101,24 @@ class JetSms
         $password = config('jetsms.auth.password');
         $originator = config('jetsms.auth.originator');
 
+        // api kullanıcı bilgilerinin girildiğini doğrula
         if (!$username or !$password) {
             throw new ApiCredentialsNotValid();
         }
 
-        if (empty(optional($sms)->getReceivers()) && empty($this->to)) {
+        $receivers = array_merge(optional($sms)->getReceivers() ?? [], $this->to);
+
+        // en az bir alıcı girildiğini doğrula
+        if (empty($receivers)) {
             throw new RecieverNotFound();
         }
 
-        if (empty(optional($sms)->getMessages()) && empty($this->message)) {
+        $messageContents = array_merge(optional($sms)->getMessages() ?? [], $this->message);
+
+        // en az bir mesaj girildiğini doğrula
+        if (empty($messageContents)) {
             throw new MessageNotFound();
         }
-
-        $receivers = array_merge(optional($sms)->getReceivers() ?? [], $this->to);
-        $messageContents = array_merge(optional($sms)->getMessages() ?? [], $this->message);
 
         $client   = new Client();
         return $client->post(config('jetsms.endpoint'), [
