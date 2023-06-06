@@ -8,21 +8,19 @@ JetSms::to(905*********)
 ```
 
 # Kurulum
-Laravel 5.6 ve öncesi sürümler için `config/app.php` dosyasında providers bölümü içine
-aşağıda jet sms service provider sınıfını ekleyin.
+`composer/json` dosyasındaki `require` içine aşağıdakini ekleyin.
 
 ```php
-'providers' => [
-   //...
-   Hsntngr\JetSms\JetSmsServiceProvider::class,
-   //...
-]
+"hsntngr/laravel-jetsms": "dev-master",
 ```
 
-Sonrasında config dosyasını publish edin. 
+Sonrasında yine `composer/json` içindeki `repositories` bölümüne aşağıdakini ekleyin. 
 
 ```php
-php artisan vendor:publish --provider="Hsntngr\JetSms\JetSmsServiceProvider" --tag=config
+{
+    "type": "vcs",
+    "url": "https://github.com/mtackgz/laravel-jetsms"
+}
 ```
 
 Api bilgilerinizi `config/jetsms.php` içerisinde düzenleyin.
